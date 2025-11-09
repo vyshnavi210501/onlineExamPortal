@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from django.contrib import messages
+from .models import User
 # Create your views here.
 class RegistrationView(CreateView):
     template_name = 'accounts/register.html'
@@ -21,11 +22,21 @@ class LoginView(LoginView):
     template_name = 'accounts/login.html'
     form_class = LoginForm
     redirect_authenticated_user = True
-    success_url = reverse_lazy('profile')
+    def get_success_url(self):
+        user = self.request.user
+        # Redirect based on role
+        if user.role == 'admin':
+            return '/admin/'
+        elif user.role == 'instructor':
+            return '/instructor/dashboard/'
+        else:
+            return '/student/dashboard/'
 
-class LogoutView(LogoutView):
-    template_name = 'accounts/logout.html'
-    success_url = reverse_lazy('logout')
+def logout_view(request):
+    from django.contrib.auth import logout
+    logout(request)
+    return render(request, 'accounts/logout.html')
+
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/profile.html'

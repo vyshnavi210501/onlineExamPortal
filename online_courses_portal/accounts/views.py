@@ -1,12 +1,12 @@
 from django.shortcuts import redirect, render
 from django.views.generic import CreateView
-from .forms import RegistrationForm,LoginForm
+from .forms import RegistrationForm,LoginForm,ProfileForm
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
-from django.contrib import messages
-from .models import User
+from django.views.generic import TemplateView,DetailView,UpdateView
+from .models import User,Profile
 # Create your views here.
 class RegistrationView(CreateView):
     template_name = 'accounts/register.html'
@@ -38,6 +38,19 @@ def logout_view(request):
     return render(request, 'accounts/logout.html')
 
 
-class ProfileView(LoginRequiredMixin, TemplateView):
+class ProfileView(LoginRequiredMixin, DetailView):
     template_name = 'accounts/profile.html'
-    success_url = reverse_lazy('profile')   
+    model = Profile
+
+    def get_object(self):
+        return self.request.user.profile
+
+
+class EditProfileView(LoginRequiredMixin, UpdateView):
+    template_name = 'accounts/edit_profile.html'
+    model = Profile
+    form_class = ProfileForm
+    success_url = reverse_lazy('profile')
+
+    def get_object(self):
+        return self.request.user.profile

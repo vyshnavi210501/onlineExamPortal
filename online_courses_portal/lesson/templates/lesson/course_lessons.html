@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ course.title }} - Lessons</title>
+</head>
+<body>
+    <h1>{{ course.title }} - Lessons</h1>
+
+    {% if lessons %}
+        <ul>
+            {% for lesson in lessons %}
+            <li>
+                <h3>{{ lesson.title }}</h3>
+                <p>{{ lesson.content }}</p>
+                {% if lesson.video_url %}
+                    <p><a href="{{ lesson.video_url }}" target="_blank">Watch Video</a></p>
+                {% endif %}
+                {% if lesson.attachment %}
+                    <p><a href="{{ lesson.attachment.url }}" target="_blank">Download Attachment</a></p>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No lessons available for this course.</p>
+    {% endif %}
+
+    <p><a href="{% url 'enrollment:my_courses' %}">Back to My Courses</a></p>
+    <p><a href="{% url 'student_dashboard' %}">Back to Dashboard</a></p>
+</body>
+</html>

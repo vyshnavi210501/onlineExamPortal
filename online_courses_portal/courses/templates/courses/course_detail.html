@@ -16,6 +16,18 @@
     <p><strong>Category:</strong> {{ course.category.name|default:"Uncategorized" }}</p>
     <p><strong>Created:</strong> {{ course.created_at|date:"M d, Y" }}</p>
 
+    {% if user.is_authenticated and user.role == 'student' %}
+        {% if is_enrolled %}
+            <p><strong>Status:</strong> Enrolled</p>
+            <a href="{% url 'lesson:course_lessons' course.slug %}">View Lessons</a>
+        {% else %}
+            <form method="post" action="{% url 'enrollment:enroll' course.slug %}">
+                {% csrf_token %}
+                <button type="submit">Enroll</button>
+            </form>
+        {% endif %}
+    {% endif %}
+
     {% if course.resource_file %}
         <p><strong>Resource:</strong> <a href="{{ course.resource_file.url }}" target="_blank">Download</a></p>
     {% endif %}

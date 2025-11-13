@@ -130,3 +130,16 @@ class CourseDetailView(DetailView):
 
     def get_queryset(self):
         return Course.objects.filter(is_published=True).select_related('instructor', 'category')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        course = self.object
+        user = self.request.user
+        if user.is_authenticated and user.role == 'student':
+            from enrollment.models import Enrollment
+            context['is_enrolled'] = Enrollment.objects.filter(
+                student=user, course=course, status='Active'
+            ).exists()
+        else:
+            context['is_enrolled'] = False
+        return context

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Courses</title>
+</head>
+<body>
+    <h1>My Enrolled Courses</h1>
+
+    {% if enrollments %}
+        <ul>
+            {% for enrollment in enrollments %}
+            <li>
+                <h3>{{ enrollment.course.title }}</h3>
+                <p>{{ enrollment.course.short_description }}</p>
+                <p>Instructor: {{ enrollment.course.instructor.username }}</p>
+                <p>Enrolled: {{ enrollment.enrolled_at|date:"M d, Y" }}</p>
+                <a href="{% url 'lesson:course_lessons' enrollment.course.slug %}">View Lessons</a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You are not enrolled in any courses yet.</p>
+    {% endif %}
+
+    <p><a href="{% url 'courses:course_list' %}">Browse Courses</a></p>
+    <p><a href="{% url 'student_dashboard' %}">Back to Dashboard</a></p>
+</body>
+</html>

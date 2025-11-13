@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ course.title }}</title>
+</head>
+<body>
+    <h1>{{ course.title }}</h1>
+
+    {% if course.thumbnail %}
+        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" style="max-width: 400px;">
+    {% endif %}
+
+    <p><strong>Short Description:</strong> {{ course.short_description }}</p>
+    <p><strong>Full Description:</strong> {{ course.full_description }}</p>
+    <p><strong>Instructor:</strong> {{ course.instructor.username }}</p>
+    <p><strong>Category:</strong> {{ course.category.name|default:"Uncategorized" }}</p>
+    <p><strong>Created:</strong> {{ course.created_at|date:"M d, Y" }}</p>
+
+    {% if course.resource_file %}
+        <p><strong>Resource:</strong> <a href="{{ course.resource_file.url }}" target="_blank">Download</a></p>
+    {% endif %}
+
+    <h3>Lessons</h3>
+    {% if course.lessons.all %}
+        <ul>
+            {% for lesson in course.lessons.all %}
+            <li>
+                <strong>{{ lesson.title }}</strong> (Order: {{ lesson.order }})
+                <p>{{ lesson.content|truncatewords:50 }}</p>
+                {% if lesson.video_url %}
+                    <p><a href="{{ lesson.video_url }}" target="_blank">Watch Video</a></p>
+                {% endif %}
+                {% if lesson.attachment %}
+                    <p><a href="{{ lesson.attachment.url }}" target="_blank">Download Attachment</a></p>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No lessons available yet.</p>
+    {% endif %}
+
+    <p><a href="{% url 'courses:course_list' %}">Back to Course Catalog</a></p>
+    <p><a href="{% url 'student_dashboard' %}">Back to Dashboard</a></p>
+</body>
+</html>

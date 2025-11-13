@@ -6,7 +6,29 @@
 <body>
     <h2>Student Dashboard</h2>
     <p>Welcome {{ user.username }} (Student)</p>
-    <p>This page will later show your enrolled classes or learning progress.</p>
+
+    <h3>All Courses</h3>
+    <p><a href="{% url 'courses:course_list' %}">Browse All Courses</a></p>
+
+    {% if courses %}
+        <div style="display: flex; flex-wrap: wrap;">
+            {% for course in courses %}
+            <div style="border: 1px solid #ccc; margin: 10px; padding: 10px; width: 300px;">
+                {% if course.thumbnail %}
+                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" style="max-width: 100%; height: auto;">
+                {% endif %}
+                <h4>{{ course.title }}</h4>
+                <p>{{ course.short_description }}</p>
+                <p><strong>Instructor:</strong> {{ course.instructor.username }}</p>
+                <p><strong>Category:</strong> {{ course.category.name|default:"Uncategorized" }}</p>
+                <a href="{% url 'courses:course_detail' course.slug %}">View Details</a>
+            </div>
+            {% endfor %}
+        </div>
+        <p><a href="{% url 'courses:course_list' %}">View All Courses</a></p>
+    {% else %}
+        <p>No courses available yet. Check back later!</p>
+    {% endif %}
 
     <p><a href="{% url 'profile' %}">View Profile</a></p>
     <p><a href="{% url 'logout' %}">Logout</a></p>

@@ -21,7 +21,7 @@ def role_required(allowed_roles):
                 elif request.user.role == 'student':
                     return redirect('student_dashboard')
                 else:
-                    return redirect('admin_dashboard')  # Assuming admin has a dashboard
+                    return redirect('admin:index')  # Redirect to Django admin for admins
             return view_func(request, *args, **kwargs)
         return wrapper
     return decorator

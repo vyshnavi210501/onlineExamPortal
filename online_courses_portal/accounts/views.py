@@ -26,11 +26,11 @@ class LoginView(LoginView):
         user = self.request.user
         # Redirect based on role
         if user.role == 'admin':
-            return '/admin/'
+            return reverse_lazy('admin:index')
         elif user.role == 'instructor':
-            return '/instructor/dashboard/'
+            return reverse_lazy('instructor_dashboard')
         else:
-            return '/student/dashboard/'
+            return reverse_lazy('student_dashboard')
 
 def logout_view(request):
     from django.contrib.auth import logout

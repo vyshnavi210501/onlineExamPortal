@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Catalog</title>
+</head>
+<body>
+    <h1>Course Catalog</h1>
+
+    <!-- Search and Filter Form -->
+    <form method="get">
+        <input type="text" name="q" placeholder="Search courses..." value="{{ query }}">
+        <select name="category">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+            <option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Search</button>
+        <a href="{% url 'courses:course_list' %}">Clear</a>
+    </form>
+
+    {% if page_obj %}
+        <div style="display: flex; flex-wrap: wrap;">
+            {% for course in page_obj %}
+            <div style="border: 1px solid #ccc; margin: 10px; padding: 10px; width: 300px;">
+                {% if course.thumbnail %}
+                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" style="max-width: 100%; height: auto;">
+                {% endif %}
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.short_description }}</p>
+                <p><strong>Instructor:</strong> {{ course.instructor.username }}</p>
+                <p><strong>Category:</strong> {{ course.category.name|default:"Uncategorized" }}</p>
+                <a href="{% url 'courses:course_detail' course.slug %}">View Details</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        <div>
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Previous</a>
+            {% endif %}
+
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Next</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>No courses found.</p>
+    {% endif %}
+
+    <p><a href="{% url 'student_dashboard' %}">Back to Dashboard</a></p>
+</body>
+</html>

@@ -6,7 +6,43 @@
 <body>
     <h2>Instructor Dashboard</h2>
     <p>Welcome {{ user.username }} (Instructor)</p>
-    <p>This page will later show your courses, enrolled students, etc.</p>
+
+    <h3>My Courses</h3>
+    <p><a href="{% url 'courses:create_course' %}">Create New Course</a></p>
+
+    {% if courses %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Published</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ course.title }}</td>
+                    <td>{{ course.category.name|default:"No Category" }}</td>
+                    <td>{{ course.is_published|yesno:"Yes,No" }}</td>
+                    <td>{{ course.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <a href="{% url 'courses:course_detail' course.slug %}">View</a> |
+                        <a href="{% url 'courses:edit_course' course.slug %}">Edit</a> |
+                        <a href="{% url 'courses:delete_course' course.slug %}">Delete</a> |
+                        <a href="{% url 'courses:toggle_publish' course.slug %}">
+                            {% if course.is_published %}Unpublish{% else %}Publish{% endif %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You haven't created any courses yet. <a href="{% url 'courses:create_course' %}">Create your first course</a>.</p>
+    {% endif %}
 
     <p><a href="{% url 'profile' %}">View Profile</a></p>
     <p><a href="{% url 'logout' %}">Logout</a></p>

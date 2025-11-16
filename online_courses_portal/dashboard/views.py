@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from .decorators import instructor_required, student_required
 from courses.models import Course
+from enrollment.models import Enrollment
 
 # Create your views here.
 @method_decorator(instructor_required, name='dispatch')
@@ -22,5 +23,6 @@ class StudentDashboardView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['courses'] = Course.objects.filter(is_published=True).select_related('instructor', 'category').order_by('-created_at')[:6]  # Show latest 6 courses
+        enrollments = Enrollment.objects.filter(student=self.request.user).select_related('course__instructor', 'course__category')
+        context['courses'] = [enrollment.course for enrollment in enrollments]
         return context

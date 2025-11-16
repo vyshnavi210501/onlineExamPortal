@@ -57,23 +57,6 @@ class Course(models.Model):
         super().save(*args, **kwargs)
 
 
-class Lesson(models.Model):
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    order = models.PositiveIntegerField()
-    video_url = models.URLField(blank=True, null=True)
-    attachment = models.FileField(upload_to='lesson_attachments/', blank=True, null=True)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.course.title} - {self.title}"
-
-    class Meta:
-        ordering = ['order']
-
-
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
     courses = models.ManyToManyField(Course, related_name='tags', blank=True)

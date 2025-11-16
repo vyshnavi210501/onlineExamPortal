@@ -9,6 +9,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'online_courses_portal.settings'
 django.setup()
 
 from courses.models import Category, Course
+from enrollment.models import Enrollment
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -45,6 +46,19 @@ def create_test_data():
         instructor.save()
         print("Created instructor: test_instructor")
 
+    # Create student if not exists
+    student, created = User.objects.get_or_create(
+        username='test_student',
+        defaults={
+            'email': 'student@test.com',
+            'role': 'student'
+        }
+    )
+    if created:
+        student.set_password('password123')
+        student.save()
+        print("Created student: test_student")
+
     # Create courses
     courses_data = [
         ('Python Basics', 'Learn Python programming fundamentals', 'Complete guide to Python basics including variables, loops, and functions.', categories[0]),
@@ -54,6 +68,7 @@ def create_test_data():
         ('UI/UX Design Principles', 'Design beautiful interfaces', 'Learn design principles for creating user-friendly interfaces.', categories[4]),
     ]
 
+    courses = []
     for title, short_desc, full_desc, category in courses_data:
         course, created = Course.objects.get_or_create(
             title=title,
@@ -66,11 +81,23 @@ def create_test_data():
                 'slug': ''
             }
         )
+        courses.append(course)
         print(f"Created course: {course.title} (slug: {course.slug})")
+
+    # Create enrollments for the student
+    for course in courses[:3]:  # Enroll in first 3 courses
+        enrollment, created = Enrollment.objects.get_or_create(
+            student=student,
+            course=course,
+            defaults={'status': 'Active'}
+        )
+        if created:
+            print(f"Enrolled student in: {course.title}")
 
     print("\nTest data created successfully!")
     print(f"Categories: {Category.objects.count()}")
     print(f"Courses: {Course.objects.count()}")
+    print(f"Enrollments: {Enrollment.objects.count()}")
 
 if __name__ == '__main__':
     create_test_data()

@@ -25,7 +25,7 @@
             </div>
             {% endfor %}
         </div>
-        <p><a href="{% url 'courses:course_list' %}">View All Courses</a></p>
+        <p><a href="{% url 'enrollment:my_courses' %}">View enrolled Courses</a></p>
     {% else %}
         <p>No courses available yet. Check back later!</p>
     {% endif %}

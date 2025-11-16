@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Category, Lesson, Tag
+from .models import Course, Category, Tag
 
 
 @admin.register(Category)
@@ -18,14 +18,6 @@ class CourseAdmin(admin.ModelAdmin):
     readonly_fields = ('slug', 'created_at', 'updated_at')
     prepopulated_fields = {'slug': ('title',)}
     raw_id_fields = ('instructor',)
-
-
-@admin.register(Lesson)
-class LessonAdmin(admin.ModelAdmin):
-    list_display = ('title', 'course', 'order', 'created_at')
-    list_filter = ('course', 'created_at')
-    search_fields = ('title', 'course__title')
-    ordering = ('course', 'order')
 
 
 @admin.register(Tag)

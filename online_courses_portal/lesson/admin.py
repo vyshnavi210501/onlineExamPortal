@@ -1,3 +1,9 @@
 from django.contrib import admin
+from .models import Lesson
 
-# Register your models here.
+@admin.register(Lesson)
+class LessonAdmin(admin.ModelAdmin):
+    list_display = ('title', 'course', 'order', 'created_at')
+    list_filter = ('course', 'created_at')
+    search_fields = ('title', 'course__title')
+    ordering = ('course', 'order')
